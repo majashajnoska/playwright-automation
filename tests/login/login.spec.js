@@ -1,4 +1,9 @@
 import { test, expect } from "@playwright/test";
+import { HomePage } from "../../page_objects/HomePage";
+import { LoginPage } from "../../page_objects/LoginPage";
+import { DashboardPage } from "../../page_objects/DashboardPage";
+
+let homePage, loginPage, dashboardPage;
 
 const adminUser = {
   email: "m.shajn@gmail.com",
@@ -7,14 +12,18 @@ const adminUser = {
 
 test.describe("Login tests", () => {
   test.beforeEach(async ({ page }) => {
+    homePage = new HomePage(page);
+    loginPage = new LoginPage(page);
+    dashboardPage = new DashboardPage(page);
+
     await page.goto("/");
   });
 
   test("Should log in with existing admin account", async ({ page }) => {
-    await page.locator('[href="/auth/login"]').click();
-    await page.locator('input[name="email"]').fill(adminUser.email);
-    await page.locator('input[name="password"]').fill(adminUser.password);
-    await page.locator('button[type="submit"]').click();
+    await homePage.loginButton.click();
+    await loginPage.emailField.fill(adminUser.email);
+    await loginPage.passwordField.fill(adminUser.password);
+    await loginPage.loginSubmit.click();
 
     await expect(page.locator("a div p.MuiTypography-root")).toHaveText(
       "role: admin"
@@ -22,17 +31,13 @@ test.describe("Login tests", () => {
   });
 
   test("Should log out", async ({ page }) => {
-    await page.locator('[href="/auth/login"]').click();
-    await page.locator('input[name="email"]').fill(adminUser.email);
-    await page.locator('input[name="password"]').fill(adminUser.password);
-    await page.locator('button[type="submit"]').click();
-    await page
-      .locator('button div [class="MuiAvatar-img css-1hy9t21"]')
-      .click();
-    await page.locator("li.MuiMenuItem-root").click();
+    await homePage.loginButton.click();
+    await loginPage.emailField.fill(adminUser.email);
+    await loginPage.passwordField.fill(adminUser.password);
+    await loginPage.loginSubmit.click();
+    await dashboardPage.profileButton.click();
+    await dashboardPage.logoutButton.click();
 
-    await expect(page.locator("h4.MuiTypography-h4")).toHaveText(
-      "Sign in to Delek Homes"
-    );
+    await expect(loginPage.loginTitle).toHaveText("Sign in to Delek Homes");
   });
 });
