@@ -6,4 +6,13 @@ export class LoginPage {
     this.loginSubmit = page.locator('button[type="submit"]');
     this.loginTitle = page.locator("h4.MuiTypography-h4");
   }
+
+  async login(email, password) {
+    if (!email || !password) {
+      throw new Error("Email and password must be provided");
+    }
+    await this.emailField.fill(email);
+    await this.passwordField.fill(password);
+    await this.loginSubmit.click();
+  }
 }

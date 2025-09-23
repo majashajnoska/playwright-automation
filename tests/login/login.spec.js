@@ -2,13 +2,9 @@ import { test, expect } from "@playwright/test";
 import { HomePage } from "../../page_objects/HomePage";
 import { LoginPage } from "../../page_objects/LoginPage";
 import { DashboardPage } from "../../page_objects/DashboardPage";
+import { users } from "../../testData/users.js";
 
 let homePage, loginPage, dashboardPage;
-
-const adminUser = {
-  email: "m.shajn@gmail.com",
-  password: "DontTestMe",
-};
 
 test.describe("Login tests", () => {
   test.beforeEach(async ({ page }) => {
@@ -21,20 +17,14 @@ test.describe("Login tests", () => {
 
   test("Should log in with existing admin account", async ({ page }) => {
     await homePage.loginButton.click();
-    await loginPage.emailField.fill(adminUser.email);
-    await loginPage.passwordField.fill(adminUser.password);
-    await loginPage.loginSubmit.click();
+    await loginPage.login(users.admin.email, users.admin.password);
 
-    await expect(page.locator("a div p.MuiTypography-root")).toHaveText(
-      "role: admin"
-    );
+    await expect(dashboardPage.userRole).toHaveText("role: admin");
   });
 
   test("Should log out", async ({ page }) => {
     await homePage.loginButton.click();
-    await loginPage.emailField.fill(adminUser.email);
-    await loginPage.passwordField.fill(adminUser.password);
-    await loginPage.loginSubmit.click();
+    await loginPage.login(users.admin.email, users.admin.password);
     await dashboardPage.profileButton.click();
     await dashboardPage.logoutButton.click();
 
