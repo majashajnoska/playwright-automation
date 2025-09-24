@@ -1,10 +1,11 @@
-import { test, expect } from "@playwright/test";
+import { test } from "../../fixtures/fixtures.js";
+import { expect } from "@playwright/test";
 import { HomePage } from "../../page_objects/HomePage";
 import { LoginPage } from "../../page_objects/LoginPage";
 import { DashboardPage } from "../../page_objects/DashboardPage";
 import { users } from "../../testData/users.js";
 import { log } from "console";
-import { apiLogin } from "../../api/UsersApi.js";
+import { apiLogin, setTokenInLocalStorage } from "../../api/UsersApi.js";
 
 let homePage, loginPage, dashboardPage;
 const adminEmail = users.admin.email;
@@ -48,7 +49,8 @@ test.describe("Login tests", () => {
   });
 
   test("Should log out", async ({ page, request }) => {
-    await apiLogin(page, request, adminEmail, adminPassword);
+    const token = await apiLogin(request, adminEmail, adminPassword);
+    await setTokenInLocalStorage(page, token);
 
     await page.goto("/dashboard");
     await dashboardPage.profileButton.click();
