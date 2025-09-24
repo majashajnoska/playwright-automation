@@ -3,8 +3,12 @@ import { HomePage } from "../../page_objects/HomePage";
 import { LoginPage } from "../../page_objects/LoginPage";
 import { DashboardPage } from "../../page_objects/DashboardPage";
 import { users } from "../../testData/users.js";
+import { log } from "console";
+import { apiLogin } from "../../api/UsersApi.js";
 
 let homePage, loginPage, dashboardPage;
+const adminEmail = users.admin.email;
+const adminPassword = users.admin.password;
 
 test.describe("Login tests", () => {
   test.beforeEach(async ({ page }, testInfo) => {
@@ -38,14 +42,15 @@ test.describe("Login tests", () => {
 
   test("Should log in with existing admin account", async ({ page }) => {
     await homePage.loginButton.click();
-    await loginPage.login(users.admin.email, users.admin.password);
+    await loginPage.login(adminEmail, adminPassword);
 
     await expect(dashboardPage.userRole).toHaveText("role: admin");
   });
 
-  test("Should log out", async ({ page }) => {
-    await homePage.loginButton.click();
-    await loginPage.login(users.admin.email, users.admin.password);
+  test("Should log out", async ({ page, request }) => {
+    await apiLogin(page, request, adminEmail, adminPassword);
+
+    await page.goto("/dashboard");
     await dashboardPage.profileButton.click();
     await dashboardPage.logoutButton.click();
 
