@@ -7,7 +7,9 @@ import { users } from "../../testData/users.js";
 import { log } from "console";
 import { apiLogin, setTokenInLocalStorage } from "../../api/UsersApi.js";
 
-let homePage, loginPage, dashboardPage;
+let homePage;
+let loginPage;
+let dashboardPage;
 const adminEmail = users.admin.email;
 const adminPassword = users.admin.password;
 
