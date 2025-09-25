@@ -23,4 +23,9 @@ export class HomePage {
       await this.darkModeSwitch.click();
     }
   }
+
+  async selectBedrooms(bedrooms) {
+    await this.bedroomsDropdown.click();
+    await this.page.locator(`li[data-value="${bedrooms}"]`).click();
+  }
 }

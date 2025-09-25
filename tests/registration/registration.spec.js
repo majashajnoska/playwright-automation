@@ -3,7 +3,8 @@ import { HomePage } from "../../page_objects/HomePage";
 import { RegisterPage } from "../../page_objects/RegisterPage";
 import { DashboardPage } from "../../page_objects/DashboardPage";
 
-let homePage, registerPage;
+let homePage;
+let registerPage;
 
 test.describe("Resgistration tests", () => {
   test.beforeEach(async ({ page }) => {

@@ -7,42 +7,56 @@ import { ListingDetailsPage } from "../../page_objects/ListingDetailsPage";
 let homePage;
 let featuredListingPage;
 let listingDetailsPage;
+let listing;
 
 test.describe("Home page search", () => {
+  test.beforeAll(async ({ createdListing }) => {
+    listing = createdListing;
+  });
+
   test.beforeEach(async ({ authenticatedPage }) => {
+    await authenticatedPage.goto("/");
+
+    const darkModeSwitch = authenticatedPage.locator(
+      "input.PrivateSwitchBase-input"
+    );
+    if (!(await darkModeSwitch.isChecked())) {
+      await darkModeSwitch.click();
+    }
+
     homePage = new HomePage(authenticatedPage);
     featuredListingPage = new FeaturedListingPage(authenticatedPage);
     listingDetailsPage = new ListingDetailsPage(authenticatedPage);
-
-    await authenticatedPage.goto("/");
-    await homePage.featuredListingButton.click();
   });
 
   test("Should search by keyword", async ({ authenticatedPage }) => {
-    await featuredListingPage.searchFilter.fill("Galewood");
+    await featuredListingPage.searchFilter.fill(listing.title);
     await featuredListingPage.startSearchButton.click();
 
     await expect(
-      featuredListingPage.listingTitle.filter({ hasText: "Galewood" }).first()
+      featuredListingPage.listingTitle
+        .filter({ hasText: listing.title })
+        .first()
     ).toBeVisible();
   });
 
   test("Should search by bedrooms", async ({ authenticatedPage }) => {
-    await featuredListingPage.bedroomsDropdown.click();
-    await featuredListingPage.bedroomsOption.click();
+    await featuredListingPage.selectBedrooms(listing.bedrooms);
     await featuredListingPage.startSearchButton.click();
     await featuredListingPage.moreInfoButton.first().click();
 
     const bedrooms = await listingDetailsPage.getBedroomCount();
-    expect(bedrooms).toBeGreaterThanOrEqual(2);
+    expect(bedrooms).toBeGreaterThanOrEqual(Number(listing.bedrooms));
   });
 
   test("Should search by city", async ({ authenticatedPage }) => {
-    await featuredListingPage.cityFilter.fill("Shine City");
+    await featuredListingPage.cityFilter.fill(listing.city);
     await featuredListingPage.startSearchButton.click();
 
-    const cityText = await featuredListingPage.listingCity.textContent();
-    expect(cityText).toContain("Shine City");
+    const cityText = await featuredListingPage.listingCity
+      .first()
+      .textContent();
+    expect(cityText).toContain(listing.city);
 
     await expect(featuredListingPage.listingTitle).toHaveCount(1);
 
@@ -84,7 +98,6 @@ test.describe("Home page search", () => {
     await authenticatedPage.goto(
       `/featured-listings?price=${minPrice}-${maxPrice}`
     );
-
     await featuredListingPage.moreInfoButton.first().click();
 
     const priceText = await listingDetailsPage.askingPriceInfo.textContent();
