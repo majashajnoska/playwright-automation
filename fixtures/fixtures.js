@@ -5,7 +5,6 @@ import { users } from "../testData/users.js";
 export const test = base.extend({
   authenticatedPage: async ({ browser }, use) => {
     const apiClient = await request.newContext();
-
     const token = await apiLogin(
       apiClient,
       users.admin.email,
@@ -21,5 +20,6 @@ export const test = base.extend({
     const page = await context.newPage();
     await use(page);
     await context.close();
+    await apiClient.dispose();
   },
 });
