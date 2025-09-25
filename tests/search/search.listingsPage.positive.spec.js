@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test } from "../../fixtures/fixtures.js";
+import { expect } from "@playwright/test";
 import { HomePage } from "../../page_objects/HomePage";
 import { FeaturedListingPage } from "../../page_objects/FeaturedListingPage";
 import { ListingDetailsPage } from "../../page_objects/ListingDetailsPage";
@@ -8,16 +9,16 @@ let featuredListingPage;
 let listingDetailsPage;
 
 test.describe("Home page search", () => {
-  test.beforeEach(async ({ page }) => {
-    homePage = new HomePage(page);
-    featuredListingPage = new FeaturedListingPage(page);
-    listingDetailsPage = new ListingDetailsPage(page);
+  test.beforeEach(async ({ authenticatedPage }) => {
+    homePage = new HomePage(authenticatedPage);
+    featuredListingPage = new FeaturedListingPage(authenticatedPage);
+    listingDetailsPage = new ListingDetailsPage(authenticatedPage);
 
-    await page.goto("/");
+    await authenticatedPage.goto("/");
     await homePage.featuredListingButton.click();
   });
 
-  test("Should search by keyword", async ({ page }) => {
+  test("Should search by keyword", async ({ authenticatedPage }) => {
     await featuredListingPage.searchFilter.fill("Galewood");
     await featuredListingPage.startSearchButton.click();
 
@@ -26,7 +27,7 @@ test.describe("Home page search", () => {
     ).toBeVisible();
   });
 
-  test("Should search by bedrooms", async ({ page }) => {
+  test("Should search by bedrooms", async ({ authenticatedPage }) => {
     await featuredListingPage.bedroomsDropdown.click();
     await featuredListingPage.bedroomsOption.click();
     await featuredListingPage.startSearchButton.click();
@@ -36,7 +37,7 @@ test.describe("Home page search", () => {
     expect(bedrooms).toBeGreaterThanOrEqual(2);
   });
 
-  test("Should search by city", async ({ page }) => {
+  test("Should search by city", async ({ authenticatedPage }) => {
     await featuredListingPage.cityFilter.fill("Shine City");
     await featuredListingPage.startSearchButton.click();
 
@@ -76,11 +77,13 @@ test.describe("Home page search", () => {
     ).toBe(expectedBathrooms);
   });
 
-  test("Should search by price", async ({ page }) => {
+  test("Should search by price", async ({ authenticatedPage }) => {
     const minPrice = 600000;
     const maxPrice = 800000;
 
-    await page.goto(`/featured-listings?price=${minPrice}-${maxPrice}`);
+    await authenticatedPage.goto(
+      `/featured-listings?price=${minPrice}-${maxPrice}`
+    );
 
     await featuredListingPage.moreInfoButton.first().click();
 
