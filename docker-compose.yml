@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  playwright-test:
+    image: playwright-automation
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - BASE_URL=${BASE_URL}
+    command: npx playwright test
+    container_name: playwright-automation
+    volumes:
+      - ./playwright-report/:/app/playwright-report
+      - ./test-results/:/app/test-results
