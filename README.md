@@ -14,6 +14,7 @@ This repository contains an automation framework built using Playwright
 - API Testing: Includes utilities for API endpoint testing.
 - Comprehensive Testing: Includes positive scenarios, API validations, and end-to-end UI flows.
 - CI/CD Ready: Integrated with GitHub Actions; uses Secrets to store sensitive data like API tokens securely.
+- Docker support: for consistent test execution
 
 ---
 
@@ -38,26 +39,37 @@ This repository contains an automation framework built using Playwright
 ## 🚀 Setup & Installation
 
 Prerequisites
+
 - Node.js (v16 or higher)
 - npm (v8 or higher)
 
 Steps
+
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/majashajnoska/playwright-automation.git
 cd playwright-automation
 ```
+
 2. Install dependencies:
+
 ```bash
 npm install
 ```
+
 3. Configure environment variables:
+
 - Copy .env.example to .env:
+
 ```bash
 cp .env.example .env
 ```
+
 - Fill in the required values (BASE_URL, ADMIN_EMAIL, etc.).
+
 4. Set up browsers:
+
 ```bash
 npx playwright install
 ```
@@ -67,14 +79,19 @@ npx playwright install
 ## 🧪 Running Tests
 
 - Run all tests:
+
 ```bash
 npx playwright test
 ```
+
 - Run tests in a specific browser:
+
 ```bash
 npx playwright test --project=firefox
 ```
+
 - Run tests in headed mode:
+
 ```bash
 npx playwright test --headed
 ```
@@ -86,9 +103,28 @@ npx playwright test --headed
 - Covers positive scenarios, API validations, and end-to-end UI flows.
 - Dynamic test data ensures robustness across different inputs.
 - Generate HTML reports for detailed results:
+
 ```bash
 npx playwright show-report
 ```
+
+---
+
+## 🐳 Running Tests in Docker
+
+Build Docker image:
+
+```bash
+docker-compose build
+```
+
+Run tests inside Docker:
+
+```bash
+docker compose run --rm playwright-test
+```
+
+The HTML report is generated in the playwright-report/ folder on your host machine.
 
 ---
 
