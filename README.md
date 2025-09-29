@@ -29,9 +29,11 @@ This repository contains an automation framework built using Playwright
 ├── testData/               # Test data files
 ├── tests/                  # Test scripts
 ├── .env.example            # Example environment variables
+├── Dockerfile              # Dockerfile for containerization
+├── docker-compose.yml      # Docker Compose configuration
 ├── .gitignore              # Git ignore file
 ├── package.json            # Project metadata and dependencies
-└── playwright.config.js     # Playwright configuration
+└── playwright.config.js    # Playwright configuration
 ```
 
 ---
